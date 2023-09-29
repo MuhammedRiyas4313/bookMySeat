@@ -12,12 +12,12 @@ export const rescheduleBooking = async (req, res) => {
       return res.status(400).json({ error: "One or more values are undefined" })
     }
 
-    const { date, startAt, seats, ticketPrice, total, movieId, theatreId, userName, email } = req.body;
+    const { date, showId, seats, ticketPrice, total, movieId, theatreId, userName, email, userId } = req.body;
     const booking = await Booking.findByIdAndUpdate(
       bookingId,
       {
         date,
-        startAt,
+        showId,
         seats,
         ticketPrice,
         total,

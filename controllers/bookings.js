@@ -9,10 +9,10 @@ export const bookTicket = async (req,res) => {
         if (!allValuesDefined) {
             return res.status(400).json({ error: "One or more values are undefined" });
         }
-        const { userId, date, startAt, seats, ticketPrice, total, movieId, theatreId, userName, email } = req.body;
+        const { userId, date, showId, seats, ticketPrice, total, movieId, theatreId, userName, email, phone } = req.body;
         const bookingInstance = new Booking({
             date, 
-            startAt, 
+            showId, 
             seats, 
             ticketPrice, 
             total, 
@@ -20,20 +20,22 @@ export const bookTicket = async (req,res) => {
             movieId, 
             theatreId, 
             userName, 
-            email
+            email,
+            phone
           });
 
           const uniqueText = `${userId}-${movieId}`;
           const QRcode = await generateQR(uniqueText);
           const sendMail = await sendEmail(email,QRcode);
           
-          bookingInstance.save((err, data) => {
-            if (err) {
-                throw new Error('booking failed!');
-            } else {
+          bookingInstance.save()
+              .then((data) => {
                 res.status(200).json({ message: 'ticket booked successfully',...data,QRcode});
-            }
-          });
+               })
+              .catch((err)=>{
+                console.log(err)
+                throw new Error('booking failed!');
+               });
     
       } catch (error) {
         res.status(500).json({ error:error.message });

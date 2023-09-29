@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 
 const { Schema } = mongoose;
 
@@ -19,9 +19,9 @@ const theatreSchema = new Schema({
   },
   screens: [
     {
-      type: Number,
-      capacity: Number,
-      rows: Number,
+      type: mongoose.Schema.Types.Mixed,
+      capacity: mongoose.Schema.Types.Mixed,
+      rows: mongoose.Schema.Types.Mixed,
     },
   ],
   image: {

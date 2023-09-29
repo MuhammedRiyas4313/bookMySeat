@@ -1,18 +1,21 @@
 import jwt from 'jsonwebtoken';
+
 import * as dotenv from "dotenv";
 dotenv.config();
 
 export const verifyAdmin = async (req, res, next) => {
     try {
-      let token = req.headers["authorization"];
+      let token = req.headers["authorization"]
+
       if (!token ) {
         return res.status(403).send("Access Denied");
       }
   
-      if (token.startsWith("Bearer ")) {
-        token = token.slice(7, token.length).trimLeft();
-      }
+     
+      console.log(token,'token',process.env.ADMIN_JWT_SECRET)
+
       const verified = jwt.verify(token, process.env.ADMIN_JWT_SECRET);
+      console.log(verified,'verified token')
       req.user = verified;
 
       if(!verified.isAdmin){
@@ -25,6 +28,7 @@ export const verifyAdmin = async (req, res, next) => {
         return res.status(403).send("Access Denied");
       }
     } catch (err) {
+      console.log(err)
       res.status(500).json({ message: err.message });
     }
   };
@@ -47,6 +51,7 @@ export const verifyAdmin = async (req, res, next) => {
         return res.status(403).send("Access Denied");
       }
     } catch (err) {
+      console.log(err)
       res.status(500).json({ message: err.message });
     }
   };

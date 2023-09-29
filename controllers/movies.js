@@ -21,12 +21,11 @@ export const addMovies = async (req,res) => {
         releaseDate
       });
       
-      movieInstance.save((err) => {
-        if (err) {
-            throw new Error('Add Movie failed!');
-        } else {
-            res.status(201).json({ message: 'movie added successfully' });
-        }
+      movieInstance.save()
+      .then((data) => {
+        res.status(201).json({ message: 'movie added successfully' });
+      }).catch((err)=>{
+        throw new Error('Add Movie failed!');
       });
     } catch (error) {
         res.status(500).json({ error:error.message });
@@ -44,9 +43,9 @@ export const getMovies = async (req,res) => {
 
 export const searchMovies = async (req,res) => {
     try {
-        const { movie } = req.query;
+        const { search } = req.query;
 
-        const regexPattern = new RegExp(`^${movie}`, 'i');
+        const regexPattern = new RegExp(`^${search}`, 'i');
     
         const movies = await Movie.find({ title: { $regex: regexPattern } });
     

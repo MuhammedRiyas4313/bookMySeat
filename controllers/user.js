@@ -24,10 +24,10 @@ export const registerUser = async (req, res) => {
     }
 
     const otp = await sendOTP(phone);
-    req.session.mobile = phone;
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+
     const userInstance = new User({
       name,
       phone,
@@ -35,12 +35,12 @@ export const registerUser = async (req, res) => {
       isAdmin
     });
 
-    userInstance.save((err) => {
-        if (err) {
-            throw new Error('User registration failed!');
-        } else {
-           res.status(201).json({ message: 'OTP sent to mobile number successfully'});
-        }
+    userInstance.save()
+     .then((data) => {
+        res.status(201).json({ message: 'OTP sent to mobile number successfully'});
+      })
+      .catch((err)=>{
+        throw new Error('User registration failed!');
       });
   } catch (error) {
     res.status(500).json({ error:error.message });
@@ -49,15 +49,17 @@ export const registerUser = async (req, res) => {
 
 export const verifyOTP = async (req,res) => {
     try {
-        const { mobile } = req.session;
-        const { otp } = req.body;
-        const verification = await otpVerification(mobile,otp);
+      const allValuesDefined = Object.values(req.body).every((value) => value !== undefined);
+  
+      if (!allValuesDefined) {
+        return res.status(400).json({ error: "One or more values are undefined" });
+      }
 
-        if(verification === 'verified'){
-            return res.status(201).json({ message: 'User registered successfully'});
-        }else{
-            return res.status(400).json({ error: verification });
-        }
+      const { otp, phone } = req.body;
+      const verification = await otpVerification(phone,otp);
+
+      const verifyUser = await User.updateOne({ phone },{$set:{isVerified:true}});
+      res.status(201).json({ message: 'User registered successfully'});
     
     } catch (error) {
         res.status(500).json({ error:error.message });
@@ -80,6 +82,8 @@ export const login = async (req, res) => {
       if (isPasswordCorrect) {
         let token = null;
         if(user.isAdmin){
+          console.log('adminLogin',"Role=>",process.env.ADMIN_JWT_ROLE,'secret =>',process.env.ADMIN_JWT_SECRET)
+
            token = jwt.sign(
             {
               id: user._id,
@@ -88,7 +92,9 @@ export const login = async (req, res) => {
              process.env.ADMIN_JWT_SECRET,
             { expiresIn: "5h" }
           );
+
         }else{
+          console.log('userLogin')
            token = jwt.sign(
             {
               id: user._id,

@@ -16,12 +16,11 @@ export const addShows = async (req, res) => {
         theatreId
       });
       
-      showInstance.save((err) => {
-        if (err) {
-            throw new Error('Add show failed!');
-        } else {
-            res.status(201).json({ message: 'Sho added successfully' });
-        }
+      showInstance.save().then(() => {
+        res.status(201).json({ message: 'Show added successfully' });
+      })
+      .catch((err) => {
+        throw new Error('Add show failed!');
       });
 
 

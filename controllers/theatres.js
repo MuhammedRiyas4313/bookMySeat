@@ -15,18 +15,16 @@ export const addTheatre = async (req, res) => {
     const theaterInstance = new Theatre({
       name,
       location,
-      capacity,
       screens: [...screens],
-      image: image,
+      image,
       ticketPrice,
     });
 
-    theaterInstance.save((err) => {
-      if (err) {
-        throw new Error("Add theatre failed!");
-      } else {
-        res.status(201).json({ message: "Theater added successfully" });
-      }
+    theaterInstance.save().then((data) => {
+      res.status(201).json({ message: "Theater added successfully" });
+    }).catch((err)=>{
+      console.log(err)
+      throw new Error("Add theatre failed!");
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -44,25 +42,12 @@ export const getTheatres = async (req, res) => {
 
 export const searchTheatre = async (req, res) => {
   try {
-    const { latitude, longitude } = req.query;
+    const { search } = req.query;
 
-    const parsedLatitude = parseFloat(latitude);
-    const parsedLongitude = parseFloat(longitude);
+    const regexPattern = new RegExp(`^${search}`, 'i');
 
-    const maxDistance = 10000;
-
-    const theatres = await Theatre.find({
-      "location.geolocation": {
-        $near: {
-          $geometry: {
-            type: "Point",
-            coordinates: [parsedLongitude, parsedLatitude],
-          },
-          $maxDistance: maxDistance,
-        },
-      },
-    });
-
+    const theatres = await Theatre.find({ "location.city": { $regex: regexPattern } });
+    
     res.status(200).json({ theatres });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });

@@ -7,10 +7,10 @@ const bookingSchema = new Schema({
     type: Date,
     required: true,
   },
-  startAt: {
-    type: String,
+  showId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Show',
     required: true,
-    trim: true,
   },
   seats: {
     type: [Schema.Types.Mixed],
