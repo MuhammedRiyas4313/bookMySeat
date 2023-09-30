@@ -23,7 +23,7 @@ export const registerUser = async (req, res) => {
       return res.status(409).json({ status: "Mobile number is already registered!" });
     }
 
-    const otp = await sendOTP(phone);
+    // const otp = await sendOTP(phone);
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -43,6 +43,7 @@ export const registerUser = async (req, res) => {
         throw new Error('User registration failed!');
       });
   } catch (error) {
+    console.log(error.message)
     res.status(500).json({ error:error.message });
   }
 };

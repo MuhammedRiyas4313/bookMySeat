@@ -7,7 +7,7 @@ const accountSID = process.env.TWILIO_ACCOUNT_SID;
 const accountAuthToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceid = process.env.TWILIO_SERVICE_ID;
 
-const client = new twilio(process.env.TWILIO_SERVICE_ID, process.env.TWILIO_AUTH_TOKEN,{ accountSid:'AC' });
+const client = new twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN,{ accountSID });
 
 export const sendOTP = async (mobile) => {
   try {
@@ -20,6 +20,7 @@ export const sendOTP = async (mobile) => {
       })
     return verification;
   } catch (error) {
+    console.log(error.message)
     throw new Error("Failed to send OTP");
   }
 }
