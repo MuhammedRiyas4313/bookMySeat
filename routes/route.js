@@ -13,13 +13,13 @@ const router = express.Router();
 router.post('/signup', registerUser);
 router.post('/verifyotp', verifyOTP);
 router.post('/login', login);
-router.post('/theatre', addTheatre);
+router.post('/theatre',verifyAdmin, addTheatre);
 router.get('/theatres', getTheatres);
 router.get('/theatre', searchTheatre);
 router.post('/movie', addMovies);
 router.get('/movies', getMovies);
 router.get('/movie', searchMovies);
-router.post('/bookshow', bookTicket);
+router.post('/bookshow', verifyUser, bookTicket);
 router.post('/reschedule/:bookingId', rescheduleBooking);
 router.post('/show', addShows);
 

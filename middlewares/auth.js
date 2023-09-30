@@ -11,21 +11,22 @@ export const verifyAdmin = async (req, res, next) => {
         return res.status(403).send("Access Denied");
       }
   
-     
-      console.log(token,'token',process.env.ADMIN_JWT_SECRET)
+      if (token.startsWith("Bearer ")) {
+        token = token.slice(7, token.length).trimLeft();
+      }
 
       const verified = jwt.verify(token, process.env.ADMIN_JWT_SECRET);
-      console.log(verified,'verified token')
+    
       req.user = verified;
 
       if(!verified.isAdmin){
-        return res.status(403).send("Access Denied");
+        return res.status(403).send("Access Denied not admin");
       }
   
       if (verified.role == process.env.ADMIN_JWT_ROLE) {
         next();
       } else {
-        return res.status(403).send("Access Denied");
+        return res.status(403).send("Access Denied not admin");
       }
     } catch (err) {
       console.log(err)
