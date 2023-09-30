@@ -7,13 +7,13 @@ const accountSID = process.env.TWILIO_ACCOUNT_SID;
 const accountAuthToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceid = process.env.TWILIO_SERVICE_ID;
 
-const client = new twilio(accountSID, accountAuthToken);
+const client = new twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 export const sendOTP = async (mobile) => {
   try {
     const verification = await client
       .verify.v2
-      .services(serviceid)
+      .services(process.env.TWILIO_SERVICE_ID)
       .verifications.create({
         to: `+91${mobile}`,
         channel: "sms",
@@ -27,7 +27,7 @@ export const sendOTP = async (mobile) => {
 export const otpVerification = async (mobile,OTP) => {
     try {
       await client.verify.v2
-        .services(serviceid)
+        .services(process.env.TWILIO_SERVICE_ID)
         .verificationChecks.create({
           to: `+91${mobile}`,
           code: OTP,

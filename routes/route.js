@@ -20,8 +20,8 @@ router.post('/movie', addMovies);
 router.get('/movies', getMovies);
 router.get('/movie', searchMovies);
 router.post('/bookshow', verifyUser, bookTicket);
-router.post('/reschedule/:bookingId', rescheduleBooking);
-router.post('/show', addShows);
+router.post('/reschedule/:bookingId',verifyUser, rescheduleBooking);
+router.post('/show',verifyAdmin, addShows);
 
 
 
