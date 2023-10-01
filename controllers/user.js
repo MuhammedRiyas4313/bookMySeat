@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 dotenv.config();
 import User from "../models/user.js";
-import { sendOTP, otpVerification } from "../utils/twilioOTP.js";
+// import { sendOTP, otpVerification } from "../utils/twilioOTP.js";
 
 export const registerUser = async (req, res) => {
   try {
