@@ -23,7 +23,7 @@ export const registerUser = async (req, res) => {
       return res.status(409).json({ status: "Mobile number is already registered!" });
     }
 
-    const otp = await sendOTP(phone);
+    // const otp = await sendOTP(phone);
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -57,7 +57,7 @@ export const verifyOTP = async (req,res) => {
       }
 
       const { otp, phone } = req.body;
-      const verification = await otpVerification(phone,otp);
+      // const verification = await otpVerification(phone,otp);
 
       const verifyUser = await User.updateOne({ phone },{$set:{isVerified:true}});
       res.status(201).json({ message: 'User registered successfully'});
